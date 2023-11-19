@@ -86,18 +86,29 @@ import numpy as np
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
 
-costs = np.logspace(-5, 2, 10)
-gamma = np.logspace(-5, 2, 10)
-scores = []
-kernels = ['rbf', 'poly']
-degrees = [1, 3, 5,]
-param_grid = dict(gamma=gamma, C=costs, kernel=kernels, degree=degrees)
-rbf_grid = GridSearchCV(SVC(cache_size = 2000), param_grid=param_grid, cv=5, scoring='accuracy',
-                        return_train_score=True)
+tune_param = [{'C': [0.01, 0.1, 1, 10], 'degree': [2, 3, 4]}]
+rbf_grid   = GridSearchCV(SVC(kernel='poly'), tune_param, cv=5, scoring='accuracy', n_jobs=-1)
 rbf_grid.fit(X, y)
+best_svmp  = rbf_grid.best_estimator_ 
+print('best cost for SVM poly %s' %rbf_grid.best_params_) 
 
-result = pd.DataFrame(rbf_grid.cv_results_).sort_values('rank_test_score', ascending=True)
-result
+tune_param = [{'C': [0.01, 0.1, 1, 10], 'gamma': [0.5, 1, 2]}]
+rbf_grid   = GridSearchCV(SVC(kernel='rbf'), tune_param, cv=5, scoring='accuracy', n_jobs=-1)
+rbf_grid.fit(X, y)
+best_svmr  = rbf_grid.best_estimator_ 
+print('best cost for SVM poly %s' %rbf_grid.best_params_) 
+
+tune_param = [{'C': [0.01, 0.1, 1, 10],'gamma': [0.5, 1, 2], 'degree': [2, 3, 4]} ]
+rbf_grid   = GridSearchCV(SVC(kernel='rbf'), tune_param, cv=5, scoring='accuracy', n_jobs=-1)
+rbf_grid.fit(X, y)
+best_svmr  = rbf_grid.best_estimator_ 
+print('best cost for SVM rbf %s' %rbf_grid.best_params_) 
+
+tune_param = [{'C': [0.01, 0.1, 1, 10],'gamma': [0.5, 1, 2], 'degree': [2, 3, 4]} ]
+rbf_grid   = GridSearchCV(SVC(kernel='poly'), tune_param, cv=5, scoring='accuracy', n_jobs=-1)
+rbf_grid.fit(X, y)
+best_svmr  = rbf_grid.best_estimator_ 
+print('best cost for SVM poly %s' %rbf_grid.best_params_) 
 
 """# Q6. Survival analysis on brain tumor data
 
